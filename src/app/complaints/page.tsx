@@ -14,7 +14,7 @@ export default function ComplaintsPage() {
           <div className="mx-auto max-w-2xl">
             <Card>
               <CardHeader>
-                <CardTitle>Submit a Complaint</CardTitle>
+                <CardTitle>Submit a Complaint or Suggestion</CardTitle>
                 <CardDescription>
                   Have an issue or a suggestion? Let us know. We'll get back to you as soon as possible.
                 </CardDescription>

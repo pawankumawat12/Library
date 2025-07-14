@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { collection, query, onSnapshot, addDoc, updateDoc, deleteDoc, doc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { Book, Users, BookOpen, BarChart, MessageSquareWarning, Award } from "lucide-react";
+import { Book, Users, BookOpen, MessageSquareWarning } from "lucide-react";
 
 import {
   Card,
@@ -91,6 +91,7 @@ export default function DashboardPage() {
       });
     } catch (error) {
       console.error("Error adding document: ", error);
+      throw error;
     }
   };
 
@@ -104,6 +105,7 @@ export default function DashboardPage() {
       });
     } catch (error) {
       console.error("Error updating document: ", error);
+      throw error;
     }
   };
 
@@ -112,6 +114,7 @@ export default function DashboardPage() {
       await deleteDoc(doc(db, 'books', bookId));
     } catch (error) {
       console.error("Error deleting document: ", error);
+      throw error;
     }
   };
   
