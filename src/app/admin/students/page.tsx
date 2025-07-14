@@ -72,15 +72,33 @@ export default function StudentsPage() {
   };
   
   const handleStudentAdded = (newStudent: Omit<Student, 'id'>) => {
+     if (students.some(student => student.email === newStudent.email)) {
+      toast({
+        title: "Error",
+        description: "A student with this email already exists.",
+        variant: "destructive",
+      });
+      return;
+    }
      const studentWithId: Student = {
       ...newStudent,
       id: new Date().toISOString(), // Use a more robust ID in a real app
     };
     setStudents(prev => [...prev, studentWithId]);
+    toast({ title: "Success", description: "Student added." });
   };
 
   const handleStudentEdited = (editedStudent: Student) => {
+    if (students.some(s => s.email === editedStudent.email && s.id !== editedStudent.id)) {
+       toast({
+        title: "Error",
+        description: "Another student with this email already exists.",
+        variant: "destructive",
+      });
+      return;
+    }
      setStudents(prev => prev.map(s => s.id === editedStudent.id ? editedStudent : s));
+     toast({ title: "Success", description: "Student details updated." });
   };
 
 

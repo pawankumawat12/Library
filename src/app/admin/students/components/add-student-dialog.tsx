@@ -23,7 +23,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/hooks/use-toast";
 import type { Student } from "@/lib/types";
 
 const studentFormSchema = z.object({
@@ -31,7 +30,7 @@ const studentFormSchema = z.object({
   email: z.string().email("Invalid email address."),
   seatNumber: z.string().min(1, "Seat number is required."),
   fee: z.coerce.number().int().min(0, "Fee must be a positive number."),
-  feePaidMonths: z.coerce.number().int().min(0, "Paid months must be a positive number."),
+  feePaidMonths: z.coerce.number().int().min(1, "Must pay for at least 1 month."),
   examPreparation: z.string().min(1, "Exam preparation is required."),
   checkInTime: z.string().optional(),
   checkOutTime: z.string().optional(),
@@ -50,7 +49,6 @@ export function AddStudentDialog({
   setIsOpen,
   onStudentAdded,
 }: AddStudentDialogProps) {
-  const { toast } = useToast();
 
   const form = useForm<StudentFormValues>({
     resolver: zodResolver(studentFormSchema),
@@ -68,7 +66,6 @@ export function AddStudentDialog({
 
   function onSubmit(values: StudentFormValues) {
     onStudentAdded(values);
-    toast({ title: "Success", description: "Student added." });
     setIsOpen(false);
     form.reset();
   }
