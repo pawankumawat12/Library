@@ -23,20 +23,31 @@ import {
 } from "@/components/ui/input-otp";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
+const ADMIN_EMAIL = "pawankumawat9009@gmail.com";
+
 export default function RegisterPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [step, setStep] = useState(1);
   const [otp, setOtp] = useState("");
   const [mockOtp, setMockOtp] = useState("");
+  const [email, setEmail] = useState("");
 
   const handleRegisterDetails = (e: React.FormEvent) => {
     e.preventDefault();
+    if (email.toLowerCase() !== ADMIN_EMAIL) {
+      toast({
+        title: "Error",
+        description: "This email address is not authorized for registration.",
+        variant: "destructive",
+      });
+      return;
+    }
     // In a real app, you would call your backend to send an OTP email.
     // For now, we'll generate a mock OTP and show it.
     const generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
     setMockOtp(generatedOtp);
-    console.log(`OTP for pawankumawat9009@gmail.com is: ${generatedOtp}`);
+    console.log(`OTP for ${ADMIN_EMAIL} is: ${generatedOtp}`);
     setStep(2);
   };
 
@@ -75,7 +86,7 @@ export default function RegisterPage() {
           <CardDescription>
             {step === 1
               ? "Fill in the details below to register."
-              : "An OTP has been sent to the designated admin email."}
+              : `An OTP has been sent to ${ADMIN_EMAIL}.`}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -83,7 +94,7 @@ export default function RegisterPage() {
             <Alert className="mb-4">
               <AlertTitle>Testing Only: OTP Generated</AlertTitle>
               <AlertDescription>
-                OTP for pawankumawat9009@gmail.com is:{" "}
+                The OTP for {ADMIN_EMAIL} is:{" "}
                 <span className="font-bold">{mockOtp}</span>
               </AlertDescription>
             </Alert>
@@ -93,15 +104,17 @@ export default function RegisterPage() {
             <form onSubmit={handleRegisterDetails} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="name">Full Name</Label>
-                <Input id="name" type="text" placeholder="John Doe" required />
+                <Input id="name" type="text" placeholder="Pawan Kumawat" required />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
                   type="email"
-                  placeholder="admin@example.com"
+                  placeholder={ADMIN_EMAIL}
                   required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
               <div className="space-y-2">
