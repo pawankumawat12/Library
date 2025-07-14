@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -14,14 +15,47 @@ import { Label } from "@/components/ui/label";
 import { Book } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export default function RegisterPage() {
   const router = useRouter();
+  const { toast } = useToast();
+  const [step, setStep] = useState(1);
+  const [otp, setOtp] = useState("");
+  const [mockOtp, setMockOtp] = useState("");
 
-  const handleRegister = (e: React.FormEvent) => {
+  const handleRegisterDetails = (e: React.FormEvent) => {
     e.preventDefault();
-    // Mock register logic
-    router.push("/admin/dashboard");
+    // In a real app, you would call your backend to send an OTP email.
+    // For now, we'll generate a mock OTP and show it.
+    const generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
+    setMockOtp(generatedOtp);
+    console.log(`OTP for pawankumawat9009@gmail.com is: ${generatedOtp}`);
+    setStep(2);
+  };
+
+  const handleVerifyOtp = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (otp === mockOtp) {
+      toast({
+        title: "Success!",
+        description: "Registration successful. Redirecting to dashboard.",
+      });
+      // Mock register logic
+      router.push("/admin/dashboard");
+    } else {
+      toast({
+        title: "Error",
+        description: "Invalid OTP. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -35,34 +69,73 @@ export default function RegisterPage() {
             <Book className="h-8 w-8 text-primary" />
             <span>MyLibrary Hub Lite</span>
           </Link>
-          <CardTitle>Create an Admin Account</CardTitle>
+          <CardTitle>
+            {step === 1 ? "Create an Admin Account" : "Verify OTP"}
+          </CardTitle>
           <CardDescription>
-            Fill in the details below to register.
+            {step === 1
+              ? "Fill in the details below to register."
+              : "An OTP has been sent to the designated admin email."}
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleRegister} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="name">Full Name</Label>
-              <Input id="name" type="text" placeholder="John Doe" required />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="admin@example.com"
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input id="password" type="password" required />
-            </div>
-            <Button type="submit" className="w-full">
-              Register
-            </Button>
-          </form>
+          {mockOtp && step === 2 && (
+            <Alert className="mb-4">
+              <AlertTitle>Testing Only: OTP Generated</AlertTitle>
+              <AlertDescription>
+                OTP for pawankumawat9009@gmail.com is:{" "}
+                <span className="font-bold">{mockOtp}</span>
+              </AlertDescription>
+            </Alert>
+          )}
+
+          {step === 1 ? (
+            <form onSubmit={handleRegisterDetails} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="name">Full Name</Label>
+                <Input id="name" type="text" placeholder="John Doe" required />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="admin@example.com"
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <Input id="password" type="password" required />
+              </div>
+              <Button type="submit" className="w-full">
+                Register
+              </Button>
+            </form>
+          ) : (
+            <form onSubmit={handleVerifyOtp} className="space-y-6">
+              <div className="flex flex-col items-center space-y-2">
+                <Label htmlFor="otp">Enter OTP</Label>
+                <InputOTP
+                  maxLength={6}
+                  value={otp}
+                  onChange={(value) => setOtp(value)}
+                >
+                  <InputOTPGroup>
+                    <InputOTPSlot index={0} />
+                    <InputOTPSlot index={1} />
+                    <InputOTPSlot index={2} />
+                    <InputOTPSlot index={3} />
+                    <InputOTPSlot index={4} />
+                    <InputOTPSlot index={5} />
+                  </InputOTPGroup>
+                </InputOTP>
+              </div>
+              <Button type="submit" className="w-full">
+                Verify and Complete Registration
+              </Button>
+            </form>
+          )}
         </CardContent>
         <CardFooter className="justify-center">
           <p className="text-sm text-muted-foreground">
