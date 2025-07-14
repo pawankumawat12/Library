@@ -13,3 +13,14 @@ export interface Student {
   seatNumber: string;
   checkInTime: string;
 }
+
+export interface Complaint {
+  id: string;
+  studentName: string;
+  studentEmail: string;
+  subject: string;
+  message: string;
+  status: 'Pending' | 'Resolved';
+  date: string;
+  response?: string;
+}

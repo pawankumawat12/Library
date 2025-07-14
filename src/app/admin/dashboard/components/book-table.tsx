@@ -108,7 +108,7 @@ export function BookTable({ books, onBookAdded, onBookEdited, onBookDeleted }: B
                   <TableCell>{book.author}</TableCell>
                   <TableCell className="text-center">{book.stock}</TableCell>
                   <TableCell className="text-center">{book.issued}</TableCell>
-                  <TableCell>
+                  <TableCell className="text-right">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button aria-haspopup="true" size="icon" variant="ghost">

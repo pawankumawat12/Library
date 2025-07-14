@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Book, Menu } from "lucide-react";
+import { Book, Menu, MessageSquareWarning } from "lucide-react";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,6 +16,7 @@ const navLinks = [
   { href: "/about", label: "About" },
   { href: "/blog", label: "Blog" },
   { href: "/contact", label: "Contact" },
+  { href: "/complaints", label: "Complaints" },
 ];
 
 export function SiteHeader() {

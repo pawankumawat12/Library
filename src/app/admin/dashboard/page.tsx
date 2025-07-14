@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Book, Users, BookOpen, BarChart } from "lucide-react";
+import { Book, Users, BookOpen, BarChart, MessageSquareWarning } from "lucide-react";
 
 import {
   Card,
@@ -16,21 +16,47 @@ import {
 import { BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from "recharts";
 
 import { BookTable } from "./components/book-table";
+import { ComplaintsTable } from "./components/complaints-table";
 import { mockBooks } from "@/data/books";
 import { mockStudents } from "@/data/students";
-import { Book as BookType, Student } from "@/lib/types";
+import { Book as BookType, Student, Complaint } from "@/lib/types";
 
 
 const TOTAL_SEATS = 50;
 
+const mockComplaints: Complaint[] = [
+  {
+    id: 'c1',
+    studentName: 'Alice Johnson',
+    studentEmail: 'alice.j@example.com',
+    subject: 'Broken chair in study area',
+    message: 'The chair at desk A12 has a wobbly leg. It feels unsafe to sit on.',
+    status: 'Pending',
+    date: '2024-08-15',
+  },
+  {
+    id: 'c2',
+    studentName: 'Bob Smith',
+    studentEmail: 'bob.smith@example.com',
+    subject: 'Request for new book',
+    message: 'Could we please get a copy of "Atomic Habits" by James Clear?',
+    status: 'Resolved',
+    date: '2024-08-14',
+    response: 'Thanks for the suggestion! The book has been ordered and will be available next week.',
+  }
+];
+
+
 export default function DashboardPage() {
   const [books, setBooks] = useState<BookType[]>(mockBooks);
   const [students, setStudents] = useState<Student[]>(mockStudents);
+  const [complaints, setComplaints] = useState<Complaint[]>(mockComplaints);
   
   const availableSeats = TOTAL_SEATS - students.length;
   const totalBooks = books.reduce((sum, book) => sum + book.stock, 0);
   const issuedBooks = books.reduce((sum, book) => sum + book.issued, 0);
   const availableBooks = totalBooks - issuedBooks;
+  const pendingComplaints = complaints.filter(c => c.status === 'Pending').length;
 
   const chartData = books.slice(0, 5).map(book => ({
     name: book.title,
@@ -64,32 +90,6 @@ export default function DashboardPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Seats</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{TOTAL_SEATS}</div>
-            <p className="text-xs text-muted-foreground">
-              {availableSeats} seats available
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Registered Students
-            </CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{students.length}</div>
-             <p className="text-xs text-muted-foreground">
-              out of {TOTAL_SEATS} seats filled
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Books</CardTitle>
             <Book className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
@@ -108,18 +108,53 @@ export default function DashboardPage() {
           <CardContent>
             <div className="text-2xl font-bold">{issuedBooks}</div>
              <p className="text-xs text-muted-foreground">
-              currently borrowed by students
+              currently borrowed
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Registered Students
+            </CardTitle>
+            <Users className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{students.length}</div>
+             <p className="text-xs text-muted-foreground">
+              out of {TOTAL_SEATS} seats filled
+            </p>
+          </CardContent>
+        </Card>
+         <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Pending Complaints</CardTitle>
+            <MessageSquareWarning className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{pendingComplaints}</div>
+            <p className="text-xs text-muted-foreground">
+              {complaints.length} total complaints
             </p>
           </CardContent>
         </Card>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
-        <Card>
+      <div className="grid gap-6 xl:grid-cols-2">
+        <BookTable
+          books={books}
+          onBookAdded={handleBookAdded}
+          onBookEdited={handleBookEdited}
+          onBookDeleted={handleBookDeleted}
+        />
+        <ComplaintsTable complaints={complaints} setComplaints={setComplaints} />
+      </div>
+
+       <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <BarChart className="h-5 w-5" />
-              Book Stock vs. Issued
+              Top 5 Books: Stock vs. Issued
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -130,22 +165,13 @@ export default function DashboardPage() {
                     <XAxis dataKey="name" tick={{ fontSize: 12 }} tickLine={false} axisLine={false} />
                     <YAxis allowDecimals={false} tickLine={false} axisLine={false}/>
                     <ChartTooltip content={<ChartTooltipContent />} />
-                    <Bar dataKey="total" fill="hsl(var(--primary) / 0.5)" radius={[4, 4, 0, 0]} />
-                    <Bar dataKey="issued" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="total" fill="hsl(var(--primary) / 0.5)" radius={[4, 4, 0, 0]} name="Total Stock" />
+                    <Bar dataKey="issued" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} name="Issued" />
                   </RechartsBarChart>
                 </ResponsiveContainer>
             </ChartContainer>
           </CardContent>
         </Card>
-        <div className="space-y-6">
-           <BookTable
-            books={books}
-            onBookAdded={handleBookAdded}
-            onBookEdited={handleBookEdited}
-            onBookDeleted={handleBookDeleted}
-          />
-        </div>
-      </div>
     </div>
   );
 }
