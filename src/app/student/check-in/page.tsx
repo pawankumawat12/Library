@@ -8,37 +8,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useToast } from "@/hooks/use-toast";
-import { Book, QrCode } from "lucide-react";
+import { Book, ScanLine } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function StudentCheckInPage() {
-  const { toast } = useToast();
-
-  const handleSubmit =
-    (action: "check-in" | "check-out") => (e: React.FormEvent) => {
-      e.preventDefault();
-      const form = e.currentTarget as HTMLFormElement;
-      const seatNumberInput = form.elements.namedItem('seatNumber') as HTMLInputElement;
-      const seatNumber = seatNumberInput.value;
-      if (!seatNumber) {
-        toast({
-          title: "Error",
-          description: "Please enter your seat number.",
-          variant: "destructive",
-        });
-        return;
-      }
-      toast({
-        title: "Success!",
-        description: `You have successfully ${
-          action === "check-in" ? "checked in" : "checked out"
-        } from seat ${seatNumber}.`,
-      });
-      form.reset();
-    };
+  const router = useRouter();
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4">
@@ -52,36 +27,18 @@ export default function StudentCheckInPage() {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <div className="flex justify-center mb-4">
-            <QrCode className="h-12 w-12 text-primary" />
+            <ScanLine className="h-12 w-12 text-primary" />
           </div>
           <CardTitle>Student Check-in / Check-out</CardTitle>
-          <CardDescription>Enter your seat number to proceed.</CardDescription>
+          <CardDescription>
+            Scan the library's QR code to begin.
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <form className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="seatNumber">Seat Number</Label>
-              <Input
-                id="seatNumber"
-                name="seatNumber"
-                type="text"
-                placeholder="e.g., A12"
-                required
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <Button type="submit" onClick={handleSubmit("check-in")}>
-                Check In
-              </Button>
-              <Button
-                type="submit"
-                variant="outline"
-                onClick={handleSubmit("check-out")}
-              >
-                Check Out
-              </Button>
-            </div>
-          </form>
+          <Button className="w-full" size="lg" onClick={() => router.push('/student/scan')}>
+            <ScanLine className="mr-2 h-5 w-5" />
+            Scan QR Code
+          </Button>
         </CardContent>
       </Card>
     </div>

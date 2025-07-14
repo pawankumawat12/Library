@@ -11,7 +11,7 @@ import {
   SidebarInset,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { Book, Home, Library, Settings, Users } from "lucide-react";
+import { Book, Home, Library, Settings, Users, QrCode } from "lucide-react";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
@@ -65,6 +65,17 @@ export default function AdminLayout({
                 <Link href="/admin/students">
                   <Users />
                   Students
+                </Link>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+             <SidebarMenuItem>
+              <SidebarMenuButton 
+                asChild
+                isActive={pathname.startsWith("/admin/qr-code")}
+              >
+                <Link href="/admin/qr-code">
+                  <QrCode />
+                  Library QR Code
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
