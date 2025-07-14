@@ -43,7 +43,7 @@ const registerFormSchema = z.object({
     .string()
     .email("Please enter a valid email.")
     .refine((email) => email.toLowerCase() === ADMIN_EMAIL, {
-      message: "This email address is not authorized for registration.",
+      message: "This email address is not authorized for registration. Please use the designated admin Gmail account.",
     }),
   password: z
     .string()
@@ -119,7 +119,7 @@ export default function RegisterPage() {
           <CardDescription>
             {step === 1
               ? "Fill in the details below to register."
-              : `An OTP has been sent to ${ADMIN_EMAIL}.`}
+              : `An OTP has been sent to ${form.getValues("email")}.`}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -127,7 +127,7 @@ export default function RegisterPage() {
             <Alert className="mb-4">
               <AlertTitle>Testing Only: OTP Generated</AlertTitle>
               <AlertDescription>
-                The OTP for {ADMIN_EMAIL} is:{" "}
+                The OTP for {form.getValues("email")} is:{" "}
                 <span className="font-bold">{mockOtp}</span>
               </AlertDescription>
             </Alert>
