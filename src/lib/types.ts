@@ -28,3 +28,10 @@ export interface Complaint {
   date: string;
   response?: string;
 }
+
+export interface SuccessStory {
+  id: string;
+  studentName: string;
+  achievement: string;
+  imageUrl: string;
+}

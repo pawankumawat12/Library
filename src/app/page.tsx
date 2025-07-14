@@ -3,12 +3,14 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { SiteHeader } from "@/components/site-header";
-import { Book, QrCode, UserCog } from "lucide-react";
+import { Book, QrCode, UserCog, Award } from "lucide-react";
 import Link from "next/link";
+import { mockSuccessStories } from "@/data/success-stories";
 
 
 export default function Home() {
@@ -102,6 +104,52 @@ export default function Home() {
                   </CardDescription>
                 </CardContent>
               </Card>
+            </div>
+          </div>
+        </section>
+
+        <section className="w-full py-12 md:py-24 lg:py-32 bg-card">
+          <div className="container px-4 md:px-6">
+            <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
+              <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm">
+                Wall of Fame
+              </div>
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+                Our Successful Students
+              </h2>
+              <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                Celebrating the achievements of our dedicated students.
+              </p>
+            </div>
+            <div className="mx-auto grid max-w-5xl items-stretch gap-8 sm:grid-cols-2 md:gap-12 lg:grid-cols-3">
+              {mockSuccessStories.map((story) => (
+                <Card key={story.id} className="flex flex-col">
+                  <CardHeader>
+                    <img
+                      src={story.imageUrl}
+                      width="600"
+                      height="400"
+                      alt={story.studentName}
+                      data-ai-hint="person portrait"
+                      className="aspect-video w-full overflow-hidden rounded-t-lg object-cover"
+                    />
+                  </CardHeader>
+                  <CardContent className="flex-1 flex flex-col items-center text-center">
+                    <h3 className="text-lg font-bold">{story.studentName}</h3>
+                    <p className="text-sm text-muted-foreground">
+                      {story.achievement}
+                    </p>
+                  </CardContent>
+                   <CardFooter className="justify-center">
+                      <Award className="h-6 w-6 text-primary" />
+                  </CardFooter>
+                </Card>
+              ))}
+            </div>
+             <div className="flex justify-center mt-12">
+               <Button asChild>
+                 <Link href="/admin/dashboard">Manage Success Stories</Link>
+               </Button>
             </div>
           </div>
         </section>

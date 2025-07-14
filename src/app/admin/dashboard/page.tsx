@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Book, Users, BookOpen, BarChart, MessageSquareWarning } from "lucide-react";
+import { Book, Users, BookOpen, BarChart, MessageSquareWarning, Award } from "lucide-react";
 
 import {
   Card,
@@ -17,9 +17,13 @@ import { BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid, Respons
 
 import { BookTable } from "./components/book-table";
 import { ComplaintsTable } from "./components/complaints-table";
+import { SuccessStoriesTable } from "./components/success-stories-table";
+
 import { mockBooks } from "@/data/books";
 import { mockStudents } from "@/data/students";
-import { Book as BookType, Student, Complaint } from "@/lib/types";
+import { mockSuccessStories } from "@/data/success-stories";
+
+import { Book as BookType, Student, Complaint, SuccessStory } from "@/lib/types";
 
 
 const TOTAL_SEATS = 50;
@@ -51,6 +55,7 @@ export default function DashboardPage() {
   const [books, setBooks] = useState<BookType[]>(mockBooks);
   const [students, setStudents] = useState<Student[]>(mockStudents);
   const [complaints, setComplaints] = useState<Complaint[]>(mockComplaints);
+  const [successStories, setSuccessStories] = useState<SuccessStory[]>(mockSuccessStories);
   
   const availableSeats = TOTAL_SEATS - students.length;
   const totalBooks = books.reduce((sum, book) => sum + book.stock, 0);
@@ -76,6 +81,20 @@ export default function DashboardPage() {
 
   const handleBookDeleted = (bookId: string) => {
     setBooks((prevBooks) => prevBooks.filter((book) => book.id !== bookId));
+  };
+  
+  const handleSuccessStoryAdded = (newStory: SuccessStory) => {
+    setSuccessStories((prev) => [...prev, newStory]);
+  };
+
+  const handleSuccessStoryEdited = (editedStory: SuccessStory) => {
+    setSuccessStories((prev) =>
+      prev.map((story) => (story.id === editedStory.id ? editedStory : story))
+    );
+  };
+
+  const handleSuccessStoryDeleted = (storyId: string) => {
+    setSuccessStories((prev) => prev.filter((story) => story.id !== storyId));
   };
 
   return (
@@ -148,6 +167,15 @@ export default function DashboardPage() {
           onBookDeleted={handleBookDeleted}
         />
         <ComplaintsTable complaints={complaints} setComplaints={setComplaints} />
+      </div>
+       
+       <div className="grid gap-6">
+        <SuccessStoriesTable
+          stories={successStories}
+          onStoryAdded={handleSuccessStoryAdded}
+          onStoryEdited={handleSuccessStoryEdited}
+          onStoryDeleted={handleSuccessStoryDeleted}
+        />
       </div>
 
        <Card>
