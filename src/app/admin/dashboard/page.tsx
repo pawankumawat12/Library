@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { collection, query, onSnapshot, addDoc, updateDoc, deleteDoc, doc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { Book, Users, BookOpen, MessageSquareWarning } from "lucide-react";
+import { Book, Users, BookOpen, MessageSquareWarning, BarChart } from "lucide-react";
 
 import {
   Card,
