@@ -13,11 +13,19 @@ import {
   SidebarInset,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { Book, Home, Library, Settings, Users, QrCode } from "lucide-react";
+import { Book, Home, Library, Settings, Users, QrCode, LogOut } from "lucide-react";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const DEFAULT_LIBRARY_NAME = "MyLibrary Hub";
 
@@ -27,6 +35,7 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [libraryName, setLibraryName] = useState(DEFAULT_LIBRARY_NAME);
   const [logoUrl, setLogoUrl] = useState("");
   const [isClient, setIsClient] = useState(false);
@@ -50,6 +59,11 @@ export default function AdminLayout({
       window.removeEventListener('storage', handleStorageChange);
     };
   }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("isAdminLoggedIn");
+    router.push("/");
+  };
 
   return (
     <SidebarProvider>
@@ -132,10 +146,26 @@ export default function AdminLayout({
           <SidebarTrigger />
           <div className="flex items-center gap-4">
             <ModeToggle />
-            <Avatar>
-              <AvatarImage src="https://placehold.co/40x40.png" alt="@admin" data-ai-hint="person face"/>
-              <AvatarFallback>AD</AvatarFallback>
-            </Avatar>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Avatar className="cursor-pointer">
+                  <AvatarImage src="https://placehold.co/40x40.png" alt="@admin" data-ai-hint="person face"/>
+                  <AvatarFallback>AD</AvatarFallback>
+                </Avatar>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => router.push('/admin/settings')}>
+                  <Settings className="mr-2 h-4 w-4" />
+                  <span>Settings</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleLogout}>
+                   <LogOut className="mr-2 h-4 w-4" />
+                  <span>Logout</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </header>
         <main className="p-4 lg:p-6">{children}</main>

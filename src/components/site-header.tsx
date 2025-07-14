@@ -29,14 +29,17 @@ export function SiteHeader() {
   const [libraryName, setLibraryName] = useState(DEFAULT_LIBRARY_NAME);
   const [logoUrl, setLogoUrl] = useState("");
   const [isClient, setIsClient] = useState(false);
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
     const savedName = localStorage.getItem("libraryName");
     const savedLogo = localStorage.getItem("logoUrl");
+    const loggedInStatus = localStorage.getItem("isAdminLoggedIn") === "true";
     if (savedName) setLibraryName(savedName);
     if (savedLogo) setLogoUrl(savedLogo);
-  }, []);
+    setIsAdminLoggedIn(loggedInStatus);
+  }, [pathname]); // Rerun on path change to update status
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -72,9 +75,11 @@ export function SiteHeader() {
         </nav>
         <div className="flex flex-1 items-center justify-end space-x-4">
           <ModeToggle />
-          <Button asChild>
-            <Link href="/auth/login">Admin Login</Link>
-          </Button>
+          {!isAdminLoggedIn && (
+            <Button asChild>
+              <Link href="/auth/login">Admin Login</Link>
+            </Button>
+          )}
           <Sheet>
             <SheetTrigger asChild>
               <Button variant="ghost" className="md:hidden px-2">

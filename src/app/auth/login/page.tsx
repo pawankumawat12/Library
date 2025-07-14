@@ -43,6 +43,9 @@ export default function LoginPage() {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     // Mock login logic
+    if (typeof window !== "undefined") {
+      localStorage.setItem("isAdminLoggedIn", "true");
+    }
     router.push("/admin/dashboard");
   };
 

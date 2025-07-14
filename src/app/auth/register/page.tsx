@@ -22,7 +22,7 @@ import {
   InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
+import { REGEXP_ONLY_DIGITS } from "input-otp";
 
 const ADMIN_EMAIL = "pawankumawat9009@gmail.com";
 
@@ -60,6 +60,9 @@ export default function RegisterPage() {
         description: "Registration successful. Redirecting to dashboard.",
       });
       // Mock register logic
+      if (typeof window !== "undefined") {
+        localStorage.setItem("isAdminLoggedIn", "true");
+      }
       router.push("/admin/dashboard");
     } else {
       toast({
@@ -134,7 +137,7 @@ export default function RegisterPage() {
                   maxLength={6}
                   value={otp}
                   onChange={(value) => setOtp(value)}
-                  pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
+                  pattern={REGEXP_ONLY_DIGITS}
                 >
                   <InputOTPGroup>
                     <InputOTPSlot index={0} />
