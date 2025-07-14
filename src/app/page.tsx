@@ -1,3 +1,7 @@
+
+"use client";
+
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -12,8 +16,20 @@ import { Book, QrCode, UserCog, Award } from "lucide-react";
 import Link from "next/link";
 import { mockSuccessStories } from "@/data/success-stories";
 
+const DEFAULT_LIBRARY_NAME = "MyLibrary Hub Lite";
 
 export default function Home() {
+  const [libraryName, setLibraryName] = useState(DEFAULT_LIBRARY_NAME);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+    const savedName = localStorage.getItem("libraryName");
+    if (savedName) {
+      setLibraryName(savedName);
+    }
+  }, []);
+
   return (
     <div className="flex flex-col min-h-screen">
       <SiteHeader />
@@ -24,7 +40,7 @@ export default function Home() {
               <div className="flex flex-col justify-center space-y-4">
                 <div className="space-y-2">
                   <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
-                    Welcome to MyLibrary Hub Lite
+                    Welcome to {isClient ? libraryName : DEFAULT_LIBRARY_NAME}
                   </h1>
                   <p className="max-w-[600px] text-muted-foreground md:text-xl">
                     A streamlined library management system for modern
@@ -156,7 +172,7 @@ export default function Home() {
       </main>
       <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
         <p className="text-xs text-muted-foreground">
-          &copy; 2024 MyLibrary Hub Lite. All rights reserved.
+          &copy; 2024 {isClient ? libraryName : DEFAULT_LIBRARY_NAME}. All rights reserved.
         </p>
       </footer>
     </div>

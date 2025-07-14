@@ -1,5 +1,7 @@
+
 "use client";
 
+import { useState, useEffect } from "react";
 import {
   Sidebar,
   SidebarContent,
@@ -17,20 +19,52 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+const DEFAULT_LIBRARY_NAME = "MyLibrary Hub";
+
 export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const [libraryName, setLibraryName] = useState(DEFAULT_LIBRARY_NAME);
+  const [logoUrl, setLogoUrl] = useState("");
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+    const savedName = localStorage.getItem("libraryName");
+    const savedLogo = localStorage.getItem("logoUrl");
+    if (savedName) setLibraryName(savedName);
+    if (savedLogo) setLogoUrl(savedLogo);
+
+    const handleStorageChange = () => {
+      const updatedName = localStorage.getItem("libraryName") || DEFAULT_LIBRARY_NAME;
+      const updatedLogo = localStorage.getItem("logoUrl") || "";
+      setLibraryName(updatedName);
+      setLogoUrl(updatedLogo);
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
 
   return (
     <SidebarProvider>
       <Sidebar>
         <SidebarHeader>
           <div className="flex items-center gap-2">
-            <Book className="w-6 h-6 text-primary" />
-            <h1 className="font-semibold text-lg">MyLibrary Hub</h1>
+            {isClient && logoUrl ? (
+              <Avatar className="h-7 w-7">
+                <AvatarImage src={logoUrl} alt={libraryName} />
+                <AvatarFallback>{libraryName.charAt(0)}</AvatarFallback>
+              </Avatar>
+            ) : (
+              <Book className="w-6 h-6 text-primary" />
+            )}
+            <h1 className="font-semibold text-lg">{isClient ? libraryName : DEFAULT_LIBRARY_NAME}</h1>
           </div>
         </SidebarHeader>
         <SidebarContent>
