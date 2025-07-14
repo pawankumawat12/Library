@@ -1,7 +1,14 @@
 import { SiteHeader } from "@/components/site-header";
 import { BookText, Target, Users } from "lucide-react";
+import { mockBooks } from "@/data/books";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+
 
 export default function AboutPage() {
+  const featuredBooks = mockBooks.slice(0, 3);
+
   return (
     <div className="flex flex-col min-h-screen">
       <SiteHeader />
@@ -49,8 +56,47 @@ export default function AboutPage() {
             </div>
           </div>
         </section>
-
+        
         <section className="w-full py-12 md:py-24 lg:py-32 bg-card">
+          <div className="container px-4 md:px-6">
+            <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
+               <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm">
+                Featured Books
+              </div>
+              <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
+                From Our Collection
+              </h2>
+            </div>
+            <div className="mx-auto grid max-w-5xl items-start gap-8 sm:grid-cols-2 md:gap-12 lg:grid-cols-3">
+              {featuredBooks.map((book) => (
+                 <Card key={book.id}>
+                  <CardHeader>
+                    <img
+                      src={`https://placehold.co/600x400.png`}
+                      width="600"
+                      height="400"
+                      alt={book.title}
+                      data-ai-hint="book cover"
+                      className="aspect-[4/3] w-full overflow-hidden rounded-t-lg object-cover"
+                    />
+                     <CardTitle className="pt-4">{book.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm text-muted-foreground">by {book.author}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+             <div className="flex justify-center mt-12">
+               <Button asChild>
+                 <Link href="/admin/dashboard">Manage Collection</Link>
+               </Button>
+            </div>
+          </div>
+        </section>
+
+
+        <section className="w-full py-12 md:py-24 lg:py-32">
           <div className="container px-4 md:px-6">
             <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
               <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">

@@ -42,6 +42,12 @@ export default function DashboardPage() {
     setBooks((prevBooks) => [...prevBooks, newBook]);
   };
 
+  const handleBookEdited = (editedBook: BookType) => {
+    setBooks((prevBooks) =>
+      prevBooks.map((book) => (book.id === editedBook.id ? editedBook : book))
+    );
+  };
+
   const handleBookDeleted = (bookId: string) => {
     setBooks((prevBooks) => prevBooks.filter((book) => book.id !== bookId));
   };
@@ -132,7 +138,12 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
         <div className="space-y-6">
-           <BookTable books={books} onBookAdded={handleBookAdded} onBookDeleted={handleBookDeleted} />
+           <BookTable
+            books={books}
+            onBookAdded={handleBookAdded}
+            onBookEdited={handleBookEdited}
+            onBookDeleted={handleBookDeleted}
+          />
         </div>
       </div>
     </div>

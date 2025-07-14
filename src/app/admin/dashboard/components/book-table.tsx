@@ -37,19 +37,27 @@ import {
 } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import type { Book } from "@/lib/types";
+import { EditBookDialog } from "./edit-book-dialog";
 import { AddBookDialog } from "./add-book-dialog";
 
 interface BookTableProps {
   books: Book[];
   onBookAdded: (newBook: Book) => void;
+  onBookEdited: (editedBook: Book) => void;
   onBookDeleted: (bookId: string) => void;
 }
 
-export function BookTable({ books, onBookAdded, onBookDeleted }: BookTableProps) {
+export function BookTable({ books, onBookAdded, onBookEdited, onBookDeleted }: BookTableProps) {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
   const { toast } = useToast();
+
+  const handleEditClick = (book: Book) => {
+    setSelectedBook(book);
+    setIsEditDialogOpen(true);
+  };
 
   const handleDeleteClick = (book: Book) => {
     setSelectedBook(book);
@@ -110,7 +118,7 @@ export function BookTable({ books, onBookAdded, onBookDeleted }: BookTableProps)
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                        <DropdownMenuItem disabled>
+                        <DropdownMenuItem onClick={() => handleEditClick(book)}>
                           <Pencil className="h-4 w-4 mr-2" />
                           Edit
                         </DropdownMenuItem>
@@ -134,6 +142,16 @@ export function BookTable({ books, onBookAdded, onBookDeleted }: BookTableProps)
         onBookAdded={onBookAdded}
         existingBooks={books}
       />
+      
+      {selectedBook && (
+        <EditBookDialog
+          isOpen={isEditDialogOpen}
+          setIsOpen={setIsEditDialogOpen}
+          onBookEdited={onBookEdited}
+          bookToEdit={selectedBook}
+        />
+      )}
+
 
       <AlertDialog
         open={isDeleteDialogOpen}
