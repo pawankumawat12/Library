@@ -1,3 +1,126 @@
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Book, QrCode, UserCog } from "lucide-react";
+import Link from "next/link";
+import { ModeToggle } from "@/components/mode-toggle";
+
 export default function Home() {
-  return <></>;
+  return (
+    <div className="flex flex-col min-h-screen">
+      <header className="container mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        <Link href="/" className="flex items-center gap-2 font-bold text-xl">
+          <Book className="h-6 w-6 text-primary" />
+          <span>MyLibrary Hub Lite</span>
+        </Link>
+        <div className="flex items-center gap-4">
+          <ModeToggle />
+          <Button asChild>
+            <Link href="/auth/login">Admin Login</Link>
+          </Button>
+        </div>
+      </header>
+      <main className="flex-1">
+        <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48 bg-card">
+          <div className="container px-4 md:px-6">
+            <div className="grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]">
+              <div className="flex flex-col justify-center space-y-4">
+                <div className="space-y-2">
+                  <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
+                    Welcome to MyLibrary Hub Lite
+                  </h1>
+                  <p className="max-w-[600px] text-muted-foreground md:text-xl">
+                    A streamlined library management system for modern
+                    educational institutions.
+                  </p>
+                </div>
+                <div className="flex flex-col gap-2 min-[400px]:flex-row">
+                  <Button asChild size="lg">
+                    <Link href="/student/check-in">Student Check-in</Link>
+                  </Button>
+                  <Button asChild variant="outline" size="lg">
+                    <Link href="/auth/login">Admin Portal</Link>
+                  </Button>
+                </div>
+              </div>
+              <img
+                src="https://placehold.co/600x400.png"
+                width="600"
+                height="400"
+                alt="Library"
+                data-ai-hint="library books"
+                className="mx-auto aspect-video overflow-hidden rounded-xl object-cover sm:w-full lg:order-last"
+              />
+            </div>
+          </div>
+        </section>
+        <section className="w-full py-12 md:py-24 lg:py-32">
+          <div className="container px-4 md:px-6">
+            <div className="flex flex-col items-center justify-center space-y-4 text-center">
+              <div className="space-y-2">
+                <div className="inline-block rounded-lg bg-secondary px-3 py-1 text-sm">
+                  Core Features
+                </div>
+                <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">
+                  Everything you need, nothing you don't.
+                </h2>
+                <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
+                  MyLibrary Hub Lite provides essential features for efficient
+                  library management.
+                </p>
+              </div>
+            </div>
+            <div className="mx-auto grid max-w-5xl items-start gap-8 sm:grid-cols-2 md:gap-12 lg:grid-cols-3 mt-12">
+              <Card>
+                <CardHeader className="items-center">
+                  <QrCode className="h-10 w-10 text-primary" />
+                  <CardTitle>QR Code Check-in</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription className="text-center">
+                    Effortless seat check-in and check-out for students using QR
+                    codes.
+                  </CardDescription>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="items-center">
+                  <Book className="h-10 w-10 text-primary" />
+                  <CardTitle>AI-Assisted Entry</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription className="text-center">
+                    Prevent duplicate book entries with our smart, AI-powered
+                    flagging system.
+                  </CardDescription>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="items-center">
+                  <UserCog className="h-10 w-10 text-primary" />
+                  <CardTitle>Admin Dashboard</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription className="text-center">
+                    Comprehensive book management and stock monitoring for
+                    administrators.
+                  </CardDescription>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
+      </main>
+      <footer className="flex flex-col gap-2 sm:flex-row py-6 w-full shrink-0 items-center px-4 md:px-6 border-t">
+        <p className="text-xs text-muted-foreground">
+          &copy; 2024 MyLibrary Hub Lite. All rights reserved.
+        </p>
+      </footer>
+    </div>
+  );
 }
