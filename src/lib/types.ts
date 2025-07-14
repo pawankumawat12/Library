@@ -5,3 +5,11 @@ export interface Book {
   stock: number;
   issued: number;
 }
+
+export interface Student {
+  id: string;
+  name: string;
+  email: string;
+  seatNumber: string;
+  checkInTime: string;
+}

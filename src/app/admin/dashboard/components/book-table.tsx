@@ -36,20 +36,20 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { mockBooks } from "@/data/books";
 import type { Book } from "@/lib/types";
 import { AddBookDialog } from "./add-book-dialog";
 
-export function BookTable() {
-  const [books, setBooks] = useState<Book[]>(mockBooks);
+interface BookTableProps {
+  books: Book[];
+  onBookAdded: (newBook: Book) => void;
+  onBookDeleted: (bookId: string) => void;
+}
+
+export function BookTable({ books, onBookAdded, onBookDeleted }: BookTableProps) {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
   const { toast } = useToast();
-
-  const handleAddBook = (newBook: Book) => {
-    setBooks((prevBooks) => [...prevBooks, newBook]);
-  };
 
   const handleDeleteClick = (book: Book) => {
     setSelectedBook(book);
@@ -58,9 +58,7 @@ export function BookTable() {
 
   const handleDeleteConfirm = () => {
     if (!selectedBook) return;
-    setBooks((prevBooks) =>
-      prevBooks.filter((b) => b.id !== selectedBook.id)
-    );
+    onBookDeleted(selectedBook.id);
     toast({
       title: "Deleted",
       description: `"${selectedBook.title}" has been removed from the library.`,
@@ -133,7 +131,7 @@ export function BookTable() {
       <AddBookDialog
         isOpen={isAddDialogOpen}
         setIsOpen={setIsAddDialogOpen}
-        onBookAdded={handleAddBook}
+        onBookAdded={onBookAdded}
         existingBooks={books}
       />
 

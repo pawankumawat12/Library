@@ -6,25 +6,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { SiteHeader } from "@/components/site-header";
 import { Book, QrCode, UserCog } from "lucide-react";
 import Link from "next/link";
-import { ModeToggle } from "@/components/mode-toggle";
+
 
 export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
-      <header className="container mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2 font-bold text-xl">
-          <Book className="h-6 w-6 text-primary" />
-          <span>MyLibrary Hub Lite</span>
-        </Link>
-        <div className="flex items-center gap-4">
-          <ModeToggle />
-          <Button asChild>
-            <Link href="/auth/login">Admin Login</Link>
-          </Button>
-        </div>
-      </header>
+      <SiteHeader />
       <main className="flex-1">
         <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48 bg-card">
           <div className="container px-4 md:px-6">
