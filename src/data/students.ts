@@ -8,6 +8,9 @@ export const mockStudents: Student[] = [
     email: "alice.j@example.com",
     seatNumber: "A12",
     checkInTime: format(new Date(), "PPpp"),
+    fee: 500,
+    feePaidMonths: 1,
+    examPreparation: "Civil Services",
   },
   {
     id: "s2",
@@ -15,6 +18,9 @@ export const mockStudents: Student[] = [
     email: "bob.smith@example.com",
     seatNumber: "B05",
     checkInTime: format(new Date(), "PPpp"),
+    fee: 500,
+    feePaidMonths: 2,
+    examPreparation: "Medical Entrance",
   },
   {
     id: "s3",
@@ -22,6 +28,9 @@ export const mockStudents: Student[] = [
     email: "charlie@example.com",
     seatNumber: "C21",
     checkInTime: format(new Date(), "PPpp"),
+    fee: 600,
+    feePaidMonths: 1,
+    examPreparation: "Engineering",
   },
   {
     id: "s4",
@@ -29,5 +38,8 @@ export const mockStudents: Student[] = [
     email: "diana.p@example.com",
     seatNumber: "D11",
     checkInTime: format(new Date(), "PPpp"),
+    fee: 550,
+    feePaidMonths: 3,
+    examPreparation: "Banking",
   },
 ];

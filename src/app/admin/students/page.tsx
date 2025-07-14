@@ -39,28 +39,36 @@ export default function StudentsPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead className="text-center">Seat Number</TableHead>
-                <TableHead>Check-in Time</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {students.map((student) => (
-                <TableRow key={student.id}>
-                  <TableCell className="font-medium">{student.name}</TableCell>
-                  <TableCell>{student.email}</TableCell>
-                  <TableCell className="text-center">
-                    <Badge variant="secondary">{student.seatNumber}</Badge>
-                  </TableCell>
-                  <TableCell>{student.checkInTime}</TableCell>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Name</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead className="text-center">Seat</TableHead>
+                  <TableHead className="text-right">Fee</TableHead>
+                  <TableHead className="text-center">Months Paid</TableHead>
+                  <TableHead>Exam Prep</TableHead>
+                  <TableHead>Check-in Time</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {students.map((student) => (
+                  <TableRow key={student.id}>
+                    <TableCell className="font-medium">{student.name}</TableCell>
+                    <TableCell>{student.email}</TableCell>
+                    <TableCell className="text-center">
+                      <Badge variant="secondary">{student.seatNumber}</Badge>
+                    </TableCell>
+                    <TableCell className="text-right">₹{student.fee}</TableCell>
+                    <TableCell className="text-center">{student.feePaidMonths}</TableCell>
+                    <TableCell>{student.examPreparation}</TableCell>
+                    <TableCell>{student.checkInTime}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </CardContent>
       </Card>
     </div>
