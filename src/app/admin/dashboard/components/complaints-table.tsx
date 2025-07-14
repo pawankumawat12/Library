@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -51,6 +52,14 @@ export function ComplaintsTable({ complaints, setComplaints }: ComplaintsTablePr
   
   const handleRespond = () => {
     if (!selectedComplaint) return;
+    if (!response.trim()) {
+      toast({
+        title: "Error",
+        description: "Response cannot be empty.",
+        variant: "destructive",
+      });
+      return;
+    }
 
     setComplaints(prev => prev.map(c => 
       c.id === selectedComplaint.id 
@@ -60,7 +69,7 @@ export function ComplaintsTable({ complaints, setComplaints }: ComplaintsTablePr
     
     toast({
       title: "Success",
-      description: "Response sent to the student.",
+      description: "Response sent and complaint marked as resolved.",
     });
 
     setIsDialogOpen(false);

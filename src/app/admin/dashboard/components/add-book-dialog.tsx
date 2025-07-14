@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -48,7 +49,7 @@ type BookFormValues = z.infer<typeof bookFormSchema>;
 interface AddBookDialogProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
-  onBookAdded: (newBookData: Omit<Book, 'id' | 'issued'>) => void;
+  onBookAdded: (newBookData: Omit<Book, 'id' | 'issued'>) => Promise<void>;
   existingBooks: Book[];
 }
 
@@ -70,7 +71,7 @@ export function AddBookDialog({
     defaultValues: {
       title: "",
       author: "",
-      stock: 0,
+      stock: 1,
     },
   });
 
@@ -106,7 +107,7 @@ export function AddBookDialog({
         })),
       });
 
-      if (result.isSimilar) {
+      if (result.isSimilar && result.similarTitles.length > 0) {
         setSimilarBooks(result.similarTitles);
       } else {
         await handleFinalSubmit(values);
@@ -119,8 +120,8 @@ export function AddBookDialog({
           "Could not verify book similarity. Please check your connection or try again.",
         variant: "destructive",
       });
-      // Optionally allow submission even if AI fails by uncommenting the next line
-      // await handleFinalSubmit(values);
+      // Allow submission even if AI fails
+      await handleFinalSubmit(values);
     } finally {
       setIsChecking(false);
     }

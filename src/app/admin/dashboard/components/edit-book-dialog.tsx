@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -37,7 +38,7 @@ type BookFormValues = z.infer<typeof bookFormSchema>;
 interface EditBookDialogProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
-  onBookEdited: (editedBook: Book) => void;
+  onBookEdited: (editedBook: Book) => Promise<void>;
   bookToEdit: Book;
 }
 

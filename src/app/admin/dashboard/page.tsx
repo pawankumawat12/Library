@@ -1,3 +1,4 @@
+
 "use client";
 import { useState, useEffect } from "react";
 import { collection, query, onSnapshot, addDoc, updateDoc, deleteDoc, doc } from "firebase/firestore";
@@ -67,6 +68,9 @@ export default function DashboardPage() {
         booksData.push({ ...doc.data(), id: doc.id } as BookType);
       });
       setBooks(booksData);
+    }, (error) => {
+        console.error("Error fetching books: ", error);
+        // Here you could set an error state and display a message to the user
     });
     return () => unsubscribe();
   }, []);
@@ -220,8 +224,8 @@ export default function DashboardPage() {
               Top 5 Books: Stock vs. Issued
             </CardTitle>
           </CardHeader>
-          <CardContent>
-             <ChartContainer config={{}} className="h-[300px] w-full">
+          <CardContent className="h-[300px]">
+             <ChartContainer config={{}} className="h-full w-full">
                 <ResponsiveContainer width="100%" height="100%">
                    <RechartsBarChart data={chartData} margin={{ top: 20, right: 20, left: -10, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} />

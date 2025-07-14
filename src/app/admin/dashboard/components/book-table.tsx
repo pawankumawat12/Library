@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -42,9 +43,9 @@ import { AddBookDialog } from "./add-book-dialog";
 
 interface BookTableProps {
   books: Book[];
-  onBookAdded: (newBookData: Omit<Book, 'id' | 'issued'>) => void;
-  onBookEdited: (editedBook: Book) => void;
-  onBookDeleted: (bookId: string) => void;
+  onBookAdded: (newBookData: Omit<Book, 'id' | 'issued'>) => Promise<void>;
+  onBookEdited: (editedBook: Book) => Promise<void>;
+  onBookDeleted: (bookId: string) => Promise<void>;
 }
 
 export function BookTable({ books, onBookAdded, onBookEdited, onBookDeleted }: BookTableProps) {
