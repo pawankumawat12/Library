@@ -12,7 +12,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Book } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
@@ -34,6 +33,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { SiteHeader } from "@/components/site-header";
 
 const ADMIN_EMAIL = "pawankumawat9009@gmail.com";
 
@@ -43,7 +43,8 @@ const registerFormSchema = z.object({
     .string()
     .email("Please enter a valid email.")
     .refine((email) => email.toLowerCase() === ADMIN_EMAIL, {
-      message: "This email address is not authorized for registration. Please use the designated admin Gmail account.",
+      message:
+        "This email address is not authorized for registration. Please use the designated admin Gmail account.",
     }),
   password: z
     .string()
@@ -103,128 +104,128 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <Link
-            href="/"
-            className="flex justify-center items-center gap-2 font-bold text-2xl mb-2"
-          >
-            <Book className="h-8 w-8 text-primary" />
-            <span>MyLibrary Hub Lite</span>
-          </Link>
-          <CardTitle>
-            {step === 1 ? "Create an Admin Account" : "Verify OTP"}
-          </CardTitle>
-          <CardDescription>
-            {step === 1
-              ? "Fill in the details below to register."
-              : `An OTP has been sent to ${form.getValues("email")}.`}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {mockOtp && step === 2 && (
-            <Alert className="mb-4">
-              <AlertTitle>Testing Only: OTP Generated</AlertTitle>
-              <AlertDescription>
-                The OTP for {form.getValues("email")} is:{" "}
-                <span className="font-bold">{mockOtp}</span>
-              </AlertDescription>
-            </Alert>
-          )}
+    <div className="flex flex-col min-h-screen">
+      <SiteHeader />
+      <main className="flex-1 flex items-center justify-center p-4">
+        <Card className="w-full max-w-md">
+          <CardHeader className="text-center">
+            <CardTitle>
+              {step === 1 ? "Create an Admin Account" : "Verify OTP"}
+            </CardTitle>
+            <CardDescription>
+              {step === 1
+                ? "Fill in the details below to register."
+                : `An OTP has been sent to ${form.getValues("email")}.`}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {mockOtp && step === 2 && (
+              <Alert className="mb-4">
+                <AlertTitle>Testing Only: OTP Generated</AlertTitle>
+                <AlertDescription>
+                  The OTP for {form.getValues("email")} is:{" "}
+                  <span className="font-bold">{mockOtp}</span>
+                </AlertDescription>
+              </Alert>
+            )}
 
-          {step === 1 ? (
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(handleRegisterDetails)}
-                className="space-y-4"
-              >
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Full Name</FormLabel>
-                      <FormControl>
-                        <Input type="text" placeholder="Pawan Kumawat" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="email"
-                          placeholder={ADMIN_EMAIL}
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Password</FormLabel>
-                      <FormControl>
-                        <Input type="password" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+            {step === 1 ? (
+              <Form {...form}>
+                <form
+                  onSubmit={form.handleSubmit(handleRegisterDetails)}
+                  className="space-y-4"
+                >
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Full Name</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="text"
+                            placeholder="Pawan Kumawat"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="email"
+                            placeholder={ADMIN_EMAIL}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Password</FormLabel>
+                        <FormControl>
+                          <Input type="password" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <Button type="submit" className="w-full">
+                    Register
+                  </Button>
+                </form>
+              </Form>
+            ) : (
+              <form onSubmit={handleVerifyOtp} className="space-y-6">
+                <div className="flex flex-col items-center space-y-2">
+                  <FormLabel htmlFor="otp">Enter OTP</FormLabel>
+                  <InputOTP
+                    maxLength={6}
+                    value={otp}
+                    onChange={(value) => setOtp(value)}
+                    pattern={REGEXP_ONLY_DIGITS}
+                  >
+                    <InputOTPGroup>
+                      <InputOTPSlot index={0} />
+                      <InputOTPSlot index={1} />
+                      <InputOTPSlot index={2} />
+                      <InputOTPSlot index={3} />
+                      <InputOTPSlot index={4} />
+                      <InputOTPSlot index={5} />
+                    </InputOTPGroup>
+                  </InputOTP>
+                </div>
                 <Button type="submit" className="w-full">
-                  Register
+                  Verify and Complete Registration
                 </Button>
               </form>
-            </Form>
-          ) : (
-            <form onSubmit={handleVerifyOtp} className="space-y-6">
-              <div className="flex flex-col items-center space-y-2">
-                <FormLabel htmlFor="otp">Enter OTP</FormLabel>
-                <InputOTP
-                  maxLength={6}
-                  value={otp}
-                  onChange={(value) => setOtp(value)}
-                  pattern={REGEXP_ONLY_DIGITS}
-                >
-                  <InputOTPGroup>
-                    <InputOTPSlot index={0} />
-                    <InputOTPSlot index={1} />
-                    <InputOTPSlot index={2} />
-                    <InputOTPSlot index={3} />
-                    <InputOTPSlot index={4} />
-                    <InputOTPSlot index={5} />
-                  </InputOTPGroup>
-                </InputOTP>
-              </div>
-              <Button type="submit" className="w-full">
-                Verify and Complete Registration
-              </Button>
-            </form>
-          )}
-        </CardContent>
-        <CardFooter className="justify-center">
-          <p className="text-sm text-muted-foreground">
-            Already have an account?{" "}
-            <Link
-              href="/auth/login"
-              className="font-semibold text-primary hover:underline"
-            >
-              Login
-            </Link>
-          </p>
-        </CardFooter>
-      </Card>
+            )}
+          </CardContent>
+          <CardFooter className="justify-center">
+            <p className="text-sm text-muted-foreground">
+              Already have an account?{" "}
+              <Link
+                href="/auth/login"
+                className="font-semibold text-primary hover:underline"
+              >
+                Login
+              </Link>
+            </p>
+          </CardFooter>
+        </Card>
+      </main>
     </div>
   );
 }

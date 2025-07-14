@@ -22,10 +22,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Book } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
+import { SiteHeader } from "@/components/site-header";
 
 function GoogleIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -90,92 +90,91 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <Link
-            href="/"
-            className="flex justify-center items-center gap-2 font-bold text-2xl mb-2"
-          >
-            <Book className="h-8 w-8 text-primary" />
-            <span>MyLibrary Hub Lite</span>
-          </Link>
-          <CardTitle>Admin Login</CardTitle>
-          <CardDescription>
-            Enter your credentials to access the admin dashboard.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="email"
-                        placeholder="admin@example.com"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Password</FormLabel>
-                    <FormControl>
-                      <Input type="password" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <Button type="submit" className="w-full">
-                Login
+    <div className="flex flex-col min-h-screen">
+      <SiteHeader />
+      <main className="flex-1 flex items-center justify-center p-4">
+        <Card className="w-full max-w-md">
+          <CardHeader className="text-center">
+            <CardTitle>Admin Login</CardTitle>
+            <CardDescription>
+              Enter your credentials to access the admin dashboard.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-4"
+              >
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="email"
+                          placeholder="admin@example.com"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <Input type="password" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button type="submit" className="w-full">
+                  Login
+                </Button>
+              </form>
+            </Form>
+            <div className="relative my-4">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-background px-2 text-muted-foreground">
+                  Or continue with
+                </span>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <Button variant="outline" onClick={handleSocialLogin}>
+                <GoogleIcon className="mr-2 h-4 w-4" />
+                Google
               </Button>
-            </form>
-          </Form>
-          <div className="relative my-4">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
+              <Button variant="outline" onClick={handleSocialLogin}>
+                <FacebookIcon className="mr-2 h-4 w-4" />
+                Facebook
+              </Button>
             </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">
-                Or continue with
-              </span>
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-4">
-            <Button variant="outline" onClick={handleSocialLogin}>
-              <GoogleIcon className="mr-2 h-4 w-4" />
-              Google
-            </Button>
-            <Button variant="outline" onClick={handleSocialLogin}>
-              <FacebookIcon className="mr-2 h-4 w-4" />
-              Facebook
-            </Button>
-          </div>
-        </CardContent>
-        <CardFooter className="justify-center">
-          <p className="text-sm text-muted-foreground">
-            Don't have an account?{" "}
-            <Link
-              href="/auth/register"
-              className="font-semibold text-primary hover:underline"
-            >
-              Register
-            </Link>
-          </p>
-        </CardFooter>
-      </Card>
+          </CardContent>
+          <CardFooter className="justify-center">
+            <p className="text-sm text-muted-foreground">
+              Don't have an account?{" "}
+              <Link
+                href="/auth/register"
+                className="font-semibold text-primary hover:underline"
+              >
+                Register
+              </Link>
+            </p>
+          </CardFooter>
+        </Card>
+      </main>
     </div>
   );
 }
