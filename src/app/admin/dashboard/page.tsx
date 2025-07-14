@@ -1,5 +1,7 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { collection, query, onSnapshot, addDoc, updateDoc, deleteDoc, doc } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 import { Book, Users, BookOpen, BarChart, MessageSquareWarning, Award } from "lucide-react";
 
 import {
@@ -19,7 +21,6 @@ import { BookTable } from "./components/book-table";
 import { ComplaintsTable } from "./components/complaints-table";
 import { SuccessStoriesTable } from "./components/success-stories-table";
 
-import { mockBooks } from "@/data/books";
 import { mockStudents } from "@/data/students";
 import { mockSuccessStories } from "@/data/success-stories";
 
@@ -52,11 +53,24 @@ const mockComplaints: Complaint[] = [
 
 
 export default function DashboardPage() {
-  const [books, setBooks] = useState<BookType[]>(mockBooks);
+  const [books, setBooks] = useState<BookType[]>([]);
   const [students, setStudents] = useState<Student[]>(mockStudents);
   const [complaints, setComplaints] = useState<Complaint[]>(mockComplaints);
   const [successStories, setSuccessStories] = useState<SuccessStory[]>(mockSuccessStories);
   
+  // Real-time listener for books from Firestore
+  useEffect(() => {
+    const q = query(collection(db, "books"));
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const booksData: BookType[] = [];
+      querySnapshot.forEach((doc) => {
+        booksData.push({ ...doc.data(), id: doc.id } as BookType);
+      });
+      setBooks(booksData);
+    });
+    return () => unsubscribe();
+  }, []);
+
   const availableSeats = TOTAL_SEATS - students.length;
   const totalBooks = books.reduce((sum, book) => sum + book.stock, 0);
   const issuedBooks = books.reduce((sum, book) => sum + book.issued, 0);
@@ -69,18 +83,36 @@ export default function DashboardPage() {
     issued: book.issued,
   }));
 
-  const handleBookAdded = (newBook: BookType) => {
-    setBooks((prevBooks) => [...prevBooks, newBook]);
+  const handleBookAdded = async (newBookData: Omit<BookType, 'id' | 'issued'>) => {
+    try {
+      await addDoc(collection(db, 'books'), {
+        ...newBookData,
+        issued: 0, // Ensure issued is set to 0 for new books
+      });
+    } catch (error) {
+      console.error("Error adding document: ", error);
+    }
   };
 
-  const handleBookEdited = (editedBook: BookType) => {
-    setBooks((prevBooks) =>
-      prevBooks.map((book) => (book.id === editedBook.id ? editedBook : book))
-    );
+  const handleBookEdited = async (editedBook: BookType) => {
+    try {
+      const bookRef = doc(db, 'books', editedBook.id);
+      await updateDoc(bookRef, {
+        title: editedBook.title,
+        author: editedBook.author,
+        stock: editedBook.stock,
+      });
+    } catch (error) {
+      console.error("Error updating document: ", error);
+    }
   };
 
-  const handleBookDeleted = (bookId: string) => {
-    setBooks((prevBooks) => prevBooks.filter((book) => book.id !== bookId));
+  const handleBookDeleted = async (bookId: string) => {
+    try {
+      await deleteDoc(doc(db, 'books', bookId));
+    } catch (error) {
+      console.error("Error deleting document: ", error);
+    }
   };
   
   const handleSuccessStoryAdded = (newStory: SuccessStory) => {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -48,6 +48,7 @@ export function EditBookDialog({
   bookToEdit,
 }: EditBookDialogProps) {
   const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<BookFormValues>({
     resolver: zodResolver(bookFormSchema),
@@ -69,14 +70,21 @@ export function EditBookDialog({
   }, [bookToEdit, form, isOpen]);
 
 
-  function onSubmit(values: BookFormValues) {
-    const editedBook: Book = {
-      ...bookToEdit,
-      ...values,
-    };
-    onBookEdited(editedBook);
-    toast({ title: "Success", description: "Book details updated." });
-    setIsOpen(false);
+  async function onSubmit(values: BookFormValues) {
+    setIsSubmitting(true);
+    try {
+      const editedBook: Book = {
+        ...bookToEdit,
+        ...values,
+      };
+      await onBookEdited(editedBook);
+      toast({ title: "Success", description: "Book details updated." });
+      setIsOpen(false);
+    } catch (error) {
+      toast({ title: "Error", description: "Failed to update book.", variant: "destructive" });
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -139,8 +147,8 @@ export function EditBookDialog({
           <Button variant="outline" onClick={() => setIsOpen(false)}>
             Cancel
           </Button>
-          <Button type="submit" form="edit-book-form">
-            Save Changes
+          <Button type="submit" form="edit-book-form" disabled={isSubmitting}>
+            {isSubmitting ? "Saving..." : "Save Changes"}
           </Button>
         </DialogFooter>
       </DialogContent>

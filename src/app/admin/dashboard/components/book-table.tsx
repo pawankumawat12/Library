@@ -42,7 +42,7 @@ import { AddBookDialog } from "./add-book-dialog";
 
 interface BookTableProps {
   books: Book[];
-  onBookAdded: (newBook: Book) => void;
+  onBookAdded: (newBookData: Omit<Book, 'id' | 'issued'>) => void;
   onBookEdited: (editedBook: Book) => void;
   onBookDeleted: (bookId: string) => void;
 }
@@ -64,15 +64,24 @@ export function BookTable({ books, onBookAdded, onBookEdited, onBookDeleted }: B
     setIsDeleteDialogOpen(true);
   };
 
-  const handleDeleteConfirm = () => {
+  const handleDeleteConfirm = async () => {
     if (!selectedBook) return;
-    onBookDeleted(selectedBook.id);
-    toast({
-      title: "Deleted",
-      description: `"${selectedBook.title}" has been removed from the library.`,
-    });
-    setIsDeleteDialogOpen(false);
-    setSelectedBook(null);
+    try {
+      await onBookDeleted(selectedBook.id);
+      toast({
+        title: "Deleted",
+        description: `"${selectedBook.title}" has been removed from the library.`,
+      });
+    } catch(error) {
+       toast({
+        title: "Error",
+        description: "Failed to delete book.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsDeleteDialogOpen(false);
+      setSelectedBook(null);
+    }
   };
 
   return (

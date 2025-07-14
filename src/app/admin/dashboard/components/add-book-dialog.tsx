@@ -48,7 +48,7 @@ type BookFormValues = z.infer<typeof bookFormSchema>;
 interface AddBookDialogProps {
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
-  onBookAdded: (newBook: Book) => void;
+  onBookAdded: (newBookData: Omit<Book, 'id' | 'issued'>) => void;
   existingBooks: Book[];
 }
 
@@ -80,21 +80,18 @@ export function AddBookDialog({
     return result.success ? result.data : null;
   };
 
-  const handleFinalSubmit = (values: BookFormValues) => {
+  const handleFinalSubmit = async (values: BookFormValues) => {
     setIsSubmitting(true);
-    // Simulate API call
-    setTimeout(() => {
-      const newBook: Book = {
-        id: new Date().toISOString(), // Use a more robust ID in a real app
-        ...values,
-        issued: 0,
-      };
-      onBookAdded(newBook);
+    try {
+      await onBookAdded(values);
       toast({ title: "Success", description: "Book added to the library." });
-      setIsSubmitting(false);
       setIsOpen(false);
       form.reset();
-    }, 500);
+    } catch (error) {
+       toast({ title: "Error", description: "Failed to add book.", variant: "destructive" });
+    } finally {
+        setIsSubmitting(false);
+    }
   };
 
   async function onSubmit(values: BookFormValues) {
@@ -112,7 +109,7 @@ export function AddBookDialog({
       if (result.isSimilar) {
         setSimilarBooks(result.similarTitles);
       } else {
-        handleFinalSubmit(values);
+        await handleFinalSubmit(values);
       }
     } catch (error) {
       console.error("AI check failed:", error);
@@ -122,17 +119,17 @@ export function AddBookDialog({
           "Could not verify book similarity. Please check your connection or try again.",
         variant: "destructive",
       });
-      // Optionally allow submission even if AI fails
-      // handleFinalSubmit(values);
+      // Optionally allow submission even if AI fails by uncommenting the next line
+      // await handleFinalSubmit(values);
     } finally {
       setIsChecking(false);
     }
   }
 
-  const handleProceedWithSimilar = () => {
+  const handleProceedWithSimilar = async () => {
     const values = getPotentialSubmission();
     if (values) {
-      handleFinalSubmit(values);
+      await handleFinalSubmit(values);
     }
     setSimilarBooks([]);
   };
