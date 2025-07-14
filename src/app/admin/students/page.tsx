@@ -50,6 +50,7 @@ export default function StudentsPage() {
                   <TableHead className="text-center">Months Paid</TableHead>
                   <TableHead>Exam Prep</TableHead>
                   <TableHead>Check-in Time</TableHead>
+                  <TableHead>Check-out Time</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -64,6 +65,7 @@ export default function StudentsPage() {
                     <TableCell className="text-center">{student.feePaidMonths}</TableCell>
                     <TableCell>{student.examPreparation}</TableCell>
                     <TableCell>{student.checkInTime}</TableCell>
+                    <TableCell>{student.checkOutTime}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

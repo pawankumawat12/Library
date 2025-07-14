@@ -12,6 +12,7 @@ export interface Student {
   email: string;
   seatNumber: string;
   checkInTime: string;
+  checkOutTime?: string;
   fee: number;
   feePaidMonths: number;
   examPreparation: string;
